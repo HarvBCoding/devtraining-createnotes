@@ -1,10 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?><record_update table="sp_widget">
     <sp_widget action="INSERT_OR_UPDATE">
         <category>custom</category>
-        <client_script><![CDATA[api.controller=function() {
+        <client_script><![CDATA[api.controller=function($rootScope,$scope) {
 	/* widget controller */
 	var c = this;
+	
+	// use a position indicator ro know which record to update
+	c.notePos = 0;
+	
 	c.selectItem = function(idx) {
+		//set the position indicator to the index value passed in on select
+		c.notePos = idx;
 		// get the selected note's sys id
 		var id = c.data.notes[idx].sys_id;
 		// log the note's sys id
@@ -14,6 +20,14 @@
 		// use emit to add the selectNote event to rootScope for listening
 		$rootScope.$emit('selectNote', id);
 	}
+	// subscribe to event; set the title and note values on
+	// the c.data object
+	$rootScope.$on('updateTitle', function(event,data) {
+		console.log("updateTitle event received: " + event);
+		console.log(data);
+		c.data.notes[c.notePos].title = data.title;
+		c.data.notes[c.notePos].note = data.note;
+	});
 };]]></client_script>
         <controller_as>c</controller_as>
         <css/>

@@ -23,7 +23,10 @@
 			noteBody: c.data.note,
 			noteTitle: c.data.title
 		}).then(function(r) {
-			
+			// once the promise is returned, emit the change
+			if (updateType == 'title' || updateType == 'body') {
+				$rootScope.$emit('updateTitle', r.data);
+			}
 		});
 	}
 }]]></client_script>
@@ -62,10 +65,13 @@
 				note.title = input.noteTitle;
 				note.note = input.noteBody;
 				note.update();
+				// update the data object with the new title
+				// and the note w/ the first 20 chars.
+				data.title = note.getValue('title');
+				data.note = note.getValue('note').slice(0,20);
 			}
 		}
 	}
-
 })();]]></script>
         <servicenow>false</servicenow>
         <sys_class_name>sp_widget</sys_class_name>
